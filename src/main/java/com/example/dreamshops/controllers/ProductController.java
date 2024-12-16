@@ -127,4 +127,29 @@ public class ProductController {
     }
   }
 
+  @GetMapping("/product/{category}/all/products")
+  public ResponseEntity<ApiResponse> findProductByCategory(
+      @PathVariable String category) {
+    try {
+      List<Product> products = iProductService.getProductsByCategory(category);
+      if (products.isEmpty()) {
+        return ResponseEntity.status(NOT_FOUND).body(new ApiResponse("No Products Found.", null));
+      }
+      return ResponseEntity.ok(new ApiResponse("Get Products Success!", products));
+    } catch (Exception e) {
+      return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(e.getMessage(), null));
+    }
+  }
+
+  @GetMapping("/product/count/by-brand/and-name")
+  public ResponseEntity<ApiResponse> countProductsByBrandAndName(@RequestParam String brandName,
+      @RequestParam String productName) {
+    try {
+      var productsCount = iProductService.countProductsByBrandAndName(brandName, productName);
+      return ResponseEntity.ok(new ApiResponse("Count Products Success!", productsCount));
+    } catch (Exception e) {
+      return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(e.getMessage(), null));
+    }
+  }
+
 }
