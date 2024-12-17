@@ -53,7 +53,7 @@ public class ProductController {
   }
 
   @PostMapping("/add")
-  public ResponseEntity<ApiResponse> addCategory(@RequestBody AddProductRequest product) {
+  public ResponseEntity<ApiResponse> addProduct(@RequestBody AddProductRequest product) {
     try {
       Product theProduct = iProductService.addProduct(product);
       return ResponseEntity.ok(new ApiResponse("Add Product Success!", theProduct));
