@@ -38,7 +38,8 @@ public class ImageController {
   private final IImageService iImageService;
 
   @PostMapping("/upload")
-  public ResponseEntity<ApiResponse> saveImages(@RequestParam List<MultipartFile> files, @RequestParam Long productId) {
+  public ResponseEntity<ApiResponse> saveImages(@RequestParam(name = "files") List<MultipartFile> files,
+      @RequestParam(name = "productId") Long productId) {
     try {
       List<ImageDto> imageDtos = iImageService.saveImage(files, productId);
       return ResponseEntity.ok(new ApiResponse("Upload Image Success!", imageDtos));
@@ -49,7 +50,7 @@ public class ImageController {
   }
 
   @GetMapping("/image/download/{imageId}")
-  public ResponseEntity<Resource> downloadImage(@PathVariable Long imageId) {
+  public ResponseEntity<Resource> downloadImage(@PathVariable(name = "imageId") Long imageId) {
     try {
       Image image = iImageService.getImageById(imageId);
       ByteArrayResource resource = new ByteArrayResource(image.getImage().getBytes(1, (int) image.getImage().length()));
