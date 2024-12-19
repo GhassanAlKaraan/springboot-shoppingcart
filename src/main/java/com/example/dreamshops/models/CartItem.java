@@ -2,6 +2,8 @@ package com.example.dreamshops.models;
 
 import java.math.BigDecimal;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -31,6 +33,7 @@ public class CartItem {
   private BigDecimal unitPrice;
   private BigDecimal totalPrice;
 
+  @JsonIgnore
   @ManyToOne(cascade = CascadeType.ALL)
   @JoinColumn(name = "cartId")
   private Cart cart;
