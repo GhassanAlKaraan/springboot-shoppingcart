@@ -24,9 +24,9 @@ public class Cart {
   @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
   private Set<CartItem> items = new HashSet<>();
 
-  // @OneToOne
-  // @JoinColumn(name = "user_id")
-  // private User user;
+  @OneToOne
+  @JoinColumn(name = "user_id")
+  private User user;
 
   public void addItem(CartItem item) {
     this.items.add(item);
