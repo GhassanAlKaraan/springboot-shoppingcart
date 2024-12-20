@@ -9,7 +9,8 @@ import com.example.dreamshops.models.OrderItem;
 import com.example.dreamshops.models.Product;
 import com.example.dreamshops.repositories.OrderRepository;
 import com.example.dreamshops.repositories.ProductRepository;
-import com.example.dreamshops.services.cart.CartService;
+import com.example.dreamshops.services.cart.ICartService;
+
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -25,19 +26,19 @@ import java.util.List;
 public class OrderService implements IOrderService {
   private final OrderRepository orderRepository;
   private final ProductRepository productRepository;
-  private final CartService cartService;
+  private final ICartService iCartService;
   private final ModelMapper modelMapper;
 
   @Transactional
   @Override
   public Order placeOrder(Long userId) {
-    Cart cart = cartService.getCartByUserId(userId);
+    Cart cart = iCartService.getCartByUserId(userId);
     Order order = createOrder(cart);
     List<OrderItem> orderItemList = createOrderItems(order, cart);
     order.setItems(new HashSet<>(orderItemList));
     order.setTotalAmount(calculateTotalAmount(orderItemList));
     Order savedOrder = orderRepository.save(order);
-    cartService.clearCart(cart.getId());
+    iCartService.clearCart(cart.getId());
     return savedOrder;
   }
 

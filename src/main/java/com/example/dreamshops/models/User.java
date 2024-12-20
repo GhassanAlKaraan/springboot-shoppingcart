@@ -24,6 +24,7 @@ public class User {
   private String email;
   private String password;
 
+  // will not have Cart and Orders by the time of user creation.
   @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
   private Cart cart;
 
