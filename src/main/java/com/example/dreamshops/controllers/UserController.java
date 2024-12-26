@@ -32,7 +32,7 @@ public class UserController {
   private final IUserService userService;
 
   @GetMapping("/{userId}/user")
-  public ResponseEntity<ApiResponse> getUserById(@PathVariable Long userId) {
+  public ResponseEntity<ApiResponse> getUserById(@PathVariable(name = "userId") Long userId) {
     try {
       User user = userService.getUserById(userId);
       UserDto userDto = userService.convertUserToDto(user);
@@ -54,7 +54,8 @@ public class UserController {
   }
 
   @PutMapping("/{userId}/update")
-  public ResponseEntity<ApiResponse> updateUser(@RequestBody UpdateUserRequest request, @PathVariable Long userId) {
+  public ResponseEntity<ApiResponse> updateUser(@RequestBody UpdateUserRequest request,
+      @PathVariable(name = "userId") Long userId) {
     try {
       User user = userService.updateUser(request, userId);
       UserDto userDto = userService.convertUserToDto(user);
