@@ -34,7 +34,7 @@ public class CartItemController {
       @RequestParam(name = "productId") Long productId,
       @RequestParam(name = "quantity") Integer quantity) {
     try {
-      User user = iUserService.getUserById(1L);
+      User user = iUserService.getUserById(2L); // !!!!!!!!!!! default user
       Cart cart = iCartService.initializeNewCart(user);
 
       iCartItemService.addItemToCart(cart.getId(), productId, quantity);
