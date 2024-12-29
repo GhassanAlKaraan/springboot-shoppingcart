@@ -1,7 +1,10 @@
 package com.example.dreamshops.services.product;
 
+import java.util.ArrayList;
+import java.util.Map;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -144,6 +147,25 @@ public class ProductService implements IProductService {
         .toList();
     productDto.setImages(imageDtos);
     return productDto;
+  }
+
+  @Override
+  public List<Product> findDistinctProductsByName() {
+    List<Product> products = productRepository.findAll();
+    Map<String, Product> distinctProductsMap = products.stream()
+        .collect(Collectors.toMap(
+            Product::getName,
+            product -> product,
+            (existing, replacement) -> existing));
+    return new ArrayList<>(distinctProductsMap.values());
+  }
+
+  @Override
+  public List<String> getAllDistinctBrands() {
+    return productRepository.findAll().stream()
+        .map(Product::getBrand)
+        .distinct()
+        .collect(Collectors.toList());
   }
 
 }
