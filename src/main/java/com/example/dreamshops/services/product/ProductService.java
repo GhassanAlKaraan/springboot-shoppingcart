@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.dreamshops.dto.ImageDto;
 import com.example.dreamshops.dto.ProductDto;
+import com.example.dreamshops.exceptions.AlreadyExistException;
 import com.example.dreamshops.exceptions.ResourceNotFoundException;
 import com.example.dreamshops.models.Category;
 import com.example.dreamshops.models.Image;
@@ -35,6 +36,12 @@ public class ProductService implements IProductService {
     // check if category is found in db
     // if yes, set it as the new product category
     // if not, save it as a new category, and set as the new product category
+
+    if (productExists(request.getName(), request.getBrand())) {
+      throw new AlreadyExistException(
+          request.getBrand() + " " + request.getName() + " Already Exists, You May Update This Product Instead.");
+    }
+
     Category category = Optional.ofNullable(categoryRepository.findByName(request.getCategory().getName()))
         .orElseGet(() -> {
           Category newCategory = new Category(request.getCategory().getName());
@@ -42,6 +49,10 @@ public class ProductService implements IProductService {
         });
     request.setCategory(category);
     return productRepository.save(createProduct(request, category));
+  }
+
+  private Boolean productExists(String name, String brand) {
+    return productRepository.existsByBrandAndName(brand, name);
   }
 
   private Product createProduct(AddProductRequest request, Category category) {
