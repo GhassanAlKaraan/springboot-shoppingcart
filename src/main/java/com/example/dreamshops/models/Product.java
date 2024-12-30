@@ -29,7 +29,7 @@ public class Product {
   private int inventory;
   private String description;
 
-  @ManyToOne(cascade = CascadeType.ALL)
+  @ManyToOne() // cascade = CascadeType.ALL
   @JoinColumn(name = "category_id")
   private Category category; // it does not depend on product, so will not remove orphans
 

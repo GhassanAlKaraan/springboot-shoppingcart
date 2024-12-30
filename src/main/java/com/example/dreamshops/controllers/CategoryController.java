@@ -6,6 +6,7 @@ import static org.springframework.http.HttpStatus.CONFLICT;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -40,6 +41,7 @@ public class CategoryController {
     }
   }
 
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
   @PostMapping("/add")
   public ResponseEntity<ApiResponse> addCategory(@RequestBody Category category) {
     try {
@@ -52,7 +54,7 @@ public class CategoryController {
   }
 
   @GetMapping("/category/{id}/category")
-  public ResponseEntity<ApiResponse> getCategoryById(@PathVariable Long id) {
+  public ResponseEntity<ApiResponse> getCategoryById(@PathVariable(name = "id") Long id) {
     try {
       Category theCategory = iCategoryService.getCategoryById(id);
       return ResponseEntity.ok(new ApiResponse("Get Category Success!", theCategory));
@@ -61,8 +63,8 @@ public class CategoryController {
     }
   }
 
-  @GetMapping("/category/{name}/category")
-  public ResponseEntity<ApiResponse> getCategoryByName(@PathVariable String name) {
+  @GetMapping("/category/{name}/by-name")
+  public ResponseEntity<ApiResponse> getCategoryByName(@PathVariable(name = "name") String name) {
     try {
       Category theCategory = iCategoryService.getCategoryByName(name);
       return ResponseEntity.ok(new ApiResponse("Get Category Success!", theCategory));
@@ -71,6 +73,7 @@ public class CategoryController {
     }
   }
 
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
   @DeleteMapping("/category/{id}/delete")
   public ResponseEntity<ApiResponse> deleteCategoryById(@PathVariable Long id) {
     try {
@@ -81,6 +84,7 @@ public class CategoryController {
     }
   }
 
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
   @PutMapping("/category/{id}/update")
   public ResponseEntity<ApiResponse> updateCategory(@PathVariable Long id, @RequestBody Category category) {
     try {

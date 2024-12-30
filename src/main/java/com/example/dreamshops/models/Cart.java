@@ -10,6 +10,8 @@ import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -24,6 +26,7 @@ public class Cart {
   @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
   private Set<CartItem> items = new HashSet<>();
 
+  @JsonIgnore
   @OneToOne
   @JoinColumn(name = "user_id")
   private User user;
@@ -37,6 +40,11 @@ public class Cart {
   public void removeItem(CartItem item) {
     this.items.remove(item);
     item.setCart(null);
+    updateTotalAmount();
+  }
+
+  public void clearItems() {
+    this.items.clear();
     updateTotalAmount();
   }
 

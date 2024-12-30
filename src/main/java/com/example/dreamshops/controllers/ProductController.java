@@ -56,7 +56,7 @@ public class ProductController {
   @PreAuthorize("hasRole('ROLE_ADMIN')")
   @PutMapping("/product/{productId}/update")
   public ResponseEntity<ApiResponse> updateProduct(@RequestBody UpdateProductRequest request,
-      @PathVariable Long productId) {
+      @PathVariable(name = "productId") Long productId) {
     try {
       Product theProduct = iProductService.updateProduct(request, productId);
       ProductDto productDto = iProductService.convertToDto(theProduct);
@@ -78,8 +78,8 @@ public class ProductController {
   }
 
   @GetMapping("/products/by/brand-and-name")
-  public ResponseEntity<ApiResponse> getProductByBrandAndName(@RequestParam String brandName,
-      @RequestParam String productName) {
+  public ResponseEntity<ApiResponse> getProductByBrandAndName(@RequestParam(name = "brandName") String brandName,
+      @RequestParam(name = "productName") String productName) {
     try {
       List<Product> products = iProductService.getProductsByBrandAndName(brandName, productName);
       if (products.isEmpty()) {
@@ -93,8 +93,8 @@ public class ProductController {
   }
 
   @GetMapping("/products/by/category-and-brand")
-  public ResponseEntity<ApiResponse> getProductByCategoryAndBrand(@RequestParam String category,
-      @RequestParam String brand) {
+  public ResponseEntity<ApiResponse> getProductByCategoryAndBrand(@RequestParam(name = "category") String category,
+      @RequestParam(name = "brand") String brand) {
     try {
       List<Product> products = iProductService.getProductsByCategoryAndBrand(category, brand);
       if (products.isEmpty()) {
@@ -108,7 +108,7 @@ public class ProductController {
   }
 
   @GetMapping("/products/{name}/products")
-  public ResponseEntity<ApiResponse> getProductByName(@PathVariable String name) {
+  public ResponseEntity<ApiResponse> getProductByName(@PathVariable(name = "name") String name) {
     try {
       List<Product> products = iProductService.getProductsByName(name);
       if (products.isEmpty()) {
@@ -122,7 +122,7 @@ public class ProductController {
   }
 
   @GetMapping("/product/by-brand")
-  public ResponseEntity<ApiResponse> findProductByBrand(@RequestParam String brand) {
+  public ResponseEntity<ApiResponse> findProductByBrand(@RequestParam(name = "brand") String brand) {
     try {
       List<Product> products = iProductService.getProductsByBrand(brand);
       if (products.isEmpty()) {
@@ -136,7 +136,7 @@ public class ProductController {
   }
 
   @GetMapping("/product/{category}/all/products")
-  public ResponseEntity<ApiResponse> findProductsByCategory(@PathVariable String category) {
+  public ResponseEntity<ApiResponse> findProductsByCategory(@PathVariable(name = "category") String category) {
     try {
       List<Product> products = iProductService.getProductsByCategory(category);
       if (products.isEmpty()) {
@@ -149,7 +149,6 @@ public class ProductController {
     }
   }
 
-  // New end point 1
   @GetMapping("/distinct/products")
   public ResponseEntity<ApiResponse> getDistinctProductsByCategory() {
     try {
@@ -164,7 +163,6 @@ public class ProductController {
     }
   }
 
-  // New end point 2
   @GetMapping("/distinct/brands")
   public ResponseEntity<ApiResponse> getAllDistinctBrands() {
     try {
@@ -176,8 +174,8 @@ public class ProductController {
   }
 
   @GetMapping("/product/count/by-brand/and-name")
-  public ResponseEntity<ApiResponse> countProductsByBrandAndName(@RequestParam String brand,
-      @RequestParam String name) {
+  public ResponseEntity<ApiResponse> countProductsByBrandAndName(@RequestParam(name = "brand") String brand,
+      @RequestParam(name = "name") String name) {
     try {
       var productCount = iProductService.countProductsByBrandAndName(brand, name);
       return ResponseEntity.ok(new ApiResponse("Product count!", productCount));

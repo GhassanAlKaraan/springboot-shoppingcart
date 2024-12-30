@@ -15,23 +15,25 @@ import org.springframework.web.bind.annotation.*;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
+import java.util.Map;
+
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("${api.prefix}/cartItems")
 public class CartItemController {
   private final ICartItemService iCartItemService;
   private final ICartService iCartService;
-  private final IUserService userService;
+  private final IUserService iUserService;
 
   @PostMapping("/item/add")
   public ResponseEntity<ApiResponse> addItemToCart(
       @RequestParam Long productId,
       @RequestParam Integer quantity) {
     try {
-      User user = userService.getAuthenticatedUser();
+      User user = iUserService.getAuthenticatedUser();
       Cart cart = iCartService.initializeNewCart(user);
       iCartItemService.addItemToCart(cart.getId(), productId, quantity);
-      return ResponseEntity.ok(new ApiResponse("Item added to cart successfully", null));
+      return ResponseEntity.ok(new ApiResponse("Item added to cart successfully", Map.of("cartId", cart.getId())));
     } catch (ResourceNotFoundException e) {
       return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
     } catch (JwtException e) {
@@ -39,13 +41,17 @@ public class CartItemController {
     }
   }
 
-  @DeleteMapping("/cart/{cartId}/item/{itemId}/remove")
-  public ResponseEntity<ApiResponse> removeItemFromCart(@PathVariable Long cartId, @PathVariable Long itemId) {
+  @DeleteMapping("/cart/{cartId}/item/{productId}/remove")
+  public ResponseEntity<ApiResponse> removeItemFromCart(@PathVariable(name = "cartId") Long cartId,
+      @PathVariable(name = "itemId") Long productId) {
     try {
-      iCartItemService.removeItemFromCart(cartId, itemId);
+      iUserService.getAuthenticatedUser();
+      iCartItemService.removeItemFromCart(cartId, productId);
       return ResponseEntity.ok(new ApiResponse("Remove Item Success", null));
     } catch (ResourceNotFoundException e) {
       return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
+    } catch (JwtException e) {
+      return ResponseEntity.status(UNAUTHORIZED).body(new ApiResponse(e.getMessage(), null));
     }
   }
 

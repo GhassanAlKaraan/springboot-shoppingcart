@@ -82,6 +82,9 @@ public class OrderService implements IOrderService {
   @Override
   public List<OrderDto> getUserOrders(Long userId) {
     List<Order> orders = orderRepository.findByUserId(userId);
+    if (orders.isEmpty()) {
+      throw new ResourceNotFoundException("No orders found for user ID: " + userId);
+    }
     return orders.stream().map(this::convertToDto).toList();
   }
 

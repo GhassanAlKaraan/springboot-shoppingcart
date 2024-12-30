@@ -11,6 +11,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,6 +38,7 @@ public class ImageController {
 
   private final IImageService iImageService;
 
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
   @PostMapping("/upload")
   public ResponseEntity<ApiResponse> saveImages(@RequestParam(name = "files") List<MultipartFile> files,
       @RequestParam(name = "productId") Long productId) {
@@ -66,28 +68,35 @@ public class ImageController {
     }
   }
 
-  @PutMapping("/image/{imageId}/update")
-  public ResponseEntity<ApiResponse> updateImage(@PathVariable Long imageId, @RequestBody MultipartFile file) {
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
+  @PutMapping("/image/{imageId}/update") // ! Might not work
+  public ResponseEntity<ApiResponse> updateImage(@PathVariable(name = "imageId") Long imageId,
+      @RequestBody MultipartFile file) {
+
     try {
       Image image = iImageService.getImageById(imageId);
       if (image != null) {
         iImageService.updateImage(file, imageId);
-        return ResponseEntity.ok(new ApiResponse("Update Success!", image));
+        return ResponseEntity.ok(new ApiResponse("Update Success!", null));
       }
+      return ResponseEntity.status(INTERNAL_SERVER_ERROR)
+          .body(new ApiResponse("Update Failed.", null));
     } catch (ResourceNotFoundException e) {
       return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
+    } catch (Exception e) {
+      return ResponseEntity.status(INTERNAL_SERVER_ERROR)
+          .body(new ApiResponse("Update Failed: " + e.getMessage(), null));
     }
-    return ResponseEntity.status(INTERNAL_SERVER_ERROR)
-        .body(new ApiResponse("Update Failed!", INTERNAL_SERVER_ERROR));
   }
 
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
   @DeleteMapping("/image/{imageId}/delete")
-  public ResponseEntity<ApiResponse> deleteImage(@PathVariable Long imageId) {
+  public ResponseEntity<ApiResponse> deleteImage(@PathVariable(name = "imageId") Long imageId) {
     try {
       Image image = iImageService.getImageById(imageId);
       if (image != null) {
         iImageService.deleteImageById(imageId);
-        return ResponseEntity.ok(new ApiResponse("Delete Success!", image));
+        return ResponseEntity.ok(new ApiResponse("Delete Success!", null));
       }
     } catch (ResourceNotFoundException e) {
       return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));

@@ -30,7 +30,8 @@ public class CartController {
       Cart cart = iCartService.getCart(cartId);
       return ResponseEntity.ok(new ApiResponse("Get Cart Success!", cart));
     } catch (ResourceNotFoundException e) {
-      return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
+      return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(),
+          null));
     }
   }
 

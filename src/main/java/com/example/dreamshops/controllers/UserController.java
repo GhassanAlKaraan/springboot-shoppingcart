@@ -24,6 +24,7 @@ import static org.springframework.http.HttpStatus.CONFLICT;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 @RequiredArgsConstructor
 @RestController
@@ -42,6 +43,7 @@ public class UserController {
     }
   }
 
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
   @PostMapping("/add")
   public ResponseEntity<ApiResponse> createUser(@RequestBody CreateUserRequest request) {
     try {
@@ -53,6 +55,7 @@ public class UserController {
     }
   }
 
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
   @PutMapping("/{userId}/update")
   public ResponseEntity<ApiResponse> updateUser(@RequestBody UpdateUserRequest request,
       @PathVariable(name = "userId") Long userId) {
@@ -65,6 +68,7 @@ public class UserController {
     }
   }
 
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
   @DeleteMapping("/{userId}/delete")
   public ResponseEntity<ApiResponse> deleteUser(@PathVariable Long userId) {
     try {
