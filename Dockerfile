@@ -2,8 +2,8 @@ FROM openjdk:17-jdk-slim
 
 WORKDIR /app
 
-COPY target/your-app.jar /app/your-app.jar
+COPY build/libs/dreamshops-0.0.1-SNAPSHOT.jar /app/dreamshops.jar
 
-EXPOSE 8080
+EXPOSE 9191
 
-ENTRYPOINT ["java", "-jar", "your-app.jar"]
+ENTRYPOINT ["java", "-jar", "dreamshops.jar"]
