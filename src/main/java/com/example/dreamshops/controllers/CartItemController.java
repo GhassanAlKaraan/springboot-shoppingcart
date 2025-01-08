@@ -43,7 +43,7 @@ public class CartItemController {
 
   @DeleteMapping("/cart/{cartId}/item/{productId}/remove")
   public ResponseEntity<ApiResponse> removeItemFromCart(@PathVariable(name = "cartId") Long cartId,
-      @PathVariable(name = "itemId") Long productId) {
+      @PathVariable(name = "productId") Long productId) {
     try {
       iUserService.getAuthenticatedUser();
       iCartItemService.removeItemFromCart(cartId, productId);
